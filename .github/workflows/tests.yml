@@ -1,0 +1,40 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: docvault
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: docvault
+          POSTGRES_USER: docvault
+          POSTGRES_PASSWORD: docvault
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U docvault -d docvault"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv venv --python 3.13
+      - run: uv sync
+      - run: uv run pytest
+        env:
+          DATABASE_URL: postgresql://docvault:docvault@localhost:5432/docvault
+          REDIS_URL: redis://localhost:6379/0
+          DOCVAULT_JWT_SECRET: ci-secret
