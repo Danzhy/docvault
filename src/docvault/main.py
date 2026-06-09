@@ -12,8 +12,10 @@ import http.server
 import socketserver
 from http import HTTPStatus
 import json
-from fastapi import FastAPI, Query
-from docvault.api.bookings import create_booking_api
+from fastapi import FastAPI, Query, HTTPException
+from docvault.api.bookings import create_booking_api, get_booklist_api
+from typing import Optional
+
 
 load_dotenv()
 
@@ -38,7 +40,18 @@ async def make_booking(place_id: int, user_id: int, from_date: str = Query(None,
 
     return 
 
+@app.get('/booklist')
+async def get_booklist(user_id: Optional[int] = None, place_id: Optional[int] = None):
+    if not user_id and not place_id:
+        raise HTTPException(status_code=400, detail="Missing query paramter: either user id or place id")
+    
+    if user_id:
+        response_obj = get_booklist_api(user_id, None)
+    else: 
+        response_obj = get_booklist_api(None, place_id)
+    
 
+    return response_obj
 
 
 # TODO: in phase 2, define the FastAPI application and register API routers.
