@@ -103,3 +103,46 @@ Unit test contracts in `tests/phase_1/test_booking_unit_contracts.py` are commen
 - `/book` inserts non-overlapping bookings.
 - `/book` rejects overlaps with `409`.
 - `/booklist` returns bookings ordered by start time.
+
+## Goal
+
+Build the first runnable DocVault exercise as a small HTTP service using only the Python standard library and raw `psycopg3`. This phase is intentionally low-level so you learn how much work a framework usually hides.
+
+## Inputs
+
+- `DATABASE_URL`
+- `DOCVAULT_PORT`
+- HTTP requests to:
+  - `GET /ping`
+  - `GET /book?name=...&start=...&end=...`
+  - `GET /booklist`
+- the committed booking schema in `src/docvault/db/schema.sql`
+
+## Outputs
+
+- plain text `pong` from `/ping`
+- JSON for successful booking creation
+- JSON list output from `/booklist`
+- `400` for malformed input
+- `409` for overlapping bookings
+
+## Implementation Notes
+
+- Use `http.server` from the standard library, not FastAPI.
+- Parse query strings with `urllib.parse`.
+- Open database connections with `psycopg3`.
+- Use the standard interval overlap rule:
+  - `existing_start < requested_end`
+  - `requested_start < existing_end`
+- Allow back-to-back bookings.
+- Return a created booking from `/book` instead of only inserting silently.
+- Keep the implementation small and direct. This phase is about fundamentals, not abstraction.
+
+## Done Criteria
+
+- `uv run python -m docvault.main` starts the server.
+- `GET /ping` returns `pong`.
+- `GET /book` creates a booking when the interval is free.
+- overlapping bookings are rejected with `409`.
+- `/booklist` returns all bookings ordered by start time.
+- the integration tests in `tests/phase_1` pass.

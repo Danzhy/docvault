@@ -29,7 +29,7 @@ print(type(PORT))
 
 app = FastAPI()
 
-@app.get('/ping')
+@app.get('/health')
 async def health_check():
     return {'status': 'ok'}
 

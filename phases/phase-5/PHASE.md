@@ -38,3 +38,37 @@ AI teams use evals to compare prompts, retrieval settings, model versions, ranki
 ## Testing
 
 Integration tests are fully written for the memory API. The eval file is a learner contract: you fill in scenarios, recall assertions, and scoring.
+
+## Goal
+
+Add durable memory and a small eval harness that measures recall quality. Phase 5 is the point where DocVault starts to look like an AI application that remembers useful facts and can be evaluated beyond simple pass/fail behavior.
+
+## Inputs
+
+- authenticated memory write requests
+- authenticated memory recall queries
+- synthetic scenarios in the eval script
+- memory data stored per user
+
+## Outputs
+
+- stored memory entries with owner information
+- ranked recall results for a user
+- a standalone recall evaluation script
+- a compact score report with per-scenario and average performance
+
+## Implementation Notes
+
+- Keep memory strictly user-scoped.
+- Distinguish between storage, retrieval, and evaluation concerns.
+- Treat the eval script as a repeatable measurement tool, not as a pytest test.
+- The eval should measure quality, so scoring can be gradual rather than binary.
+- Keep the synthetic scenarios small and representative.
+
+## Done Criteria
+
+- users can store memory entries
+- recall returns relevant memories for the same user
+- another user’s memories never appear in recall
+- the eval script runs as a standalone program
+- the eval prints scenario scores and an average score

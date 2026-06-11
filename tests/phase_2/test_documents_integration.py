@@ -3,7 +3,7 @@ from uuid import uuid4
 from fastapi.testclient import TestClient
 import pytest
 
-from docvault.main import app
+from docvault.src.docvault.main import app
 
 
 pytestmark = pytest.mark.integration
