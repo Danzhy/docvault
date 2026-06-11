@@ -29,4 +29,3 @@ class User(BaseModel):
         if not re.search(special_re, password):
             raise ValueError("Password must have at least 1 special character")
         
-

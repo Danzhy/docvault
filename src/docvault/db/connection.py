@@ -14,6 +14,7 @@ load_dotenv()
 
 # TODO: implement get_database_url() -> str.
 # Reads DATABASE_URL and raises a clear error when it is missing.
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 # TODO: implement connect().
 # Opens and returns a psycopg3 connection using get_database_url().

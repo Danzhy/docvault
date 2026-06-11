@@ -1,10 +1,9 @@
 CREATE TABLE IF NOT EXISTS bookings (
-    id BIGSERIAL PRIMARY KEY,
-    name TEXT NOT NULL,
-    starts_at TIMESTAMPTZ NOT NULL,
-    ends_at TIMESTAMPTZ NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    CHECK (starts_at < ends_at)
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    place_id INTEGER NOT NULL,
+    time_from TIMESTAMP NOT NULL,
+    time_to TIMESTAMP NOT NULL
 );
 
 CREATE INDEX IF NOT EXISTS idx_bookings_interval
