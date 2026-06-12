@@ -31,7 +31,6 @@ jobs:
         with:
           enable-cache: true
           python-version: "3.13"
-      - run: uv venv --python 3.13
       - run: uv sync
       - run: uv run pytest
         env:
