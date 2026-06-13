@@ -13,10 +13,9 @@ from .connection import Session, User
 # Inserts a user and returns the created row using RETURNING.
 
 def create_user(user: User):
-
     with Session() as session:
-
         with session.begin():
+            
             session.add(user)
 
 

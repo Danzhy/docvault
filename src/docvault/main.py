@@ -13,6 +13,7 @@ import socketserver
 from http import HTTPStatus
 import json
 from fastapi import FastAPI, Query, HTTPException
+from fastapi.security import OAuth2PasswordBearer
 from docvault.api.bookings import create_booking_api, get_booklist_api
 from typing import Optional
 
@@ -29,9 +30,14 @@ print(type(PORT))
 
 app = FastAPI()
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
+
 @app.get('/health')
 async def health_check():
     return {'status': 'ok'}
+
+
+
 
 @app.post('/book', status_code=200)
 async def make_booking(place_id: int, user_id: int, from_date: str = Query(None, alias="from"), to_date: str = Query(None, alias="to")):
