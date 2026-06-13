@@ -8,9 +8,11 @@ JWT construction live in docvault.auth modules.
 from fastapi import APIRouter
 from docvault.schemas.requests import User
 
+from docvault.db.user_repository import create_user
+
 auth = APIRouter(
     prefix="/auth",
-    tags="auth"
+    tags=["auth"]
 )
 
 # TODO: implement POST /auth/register.
@@ -18,6 +20,9 @@ auth = APIRouter(
 @auth.post("/register")
 async def register_user(user: User):
     #call a function that would register a user
+
+    breakpoint()
+    create_user(user)
 
     return {"email": user.email}
 

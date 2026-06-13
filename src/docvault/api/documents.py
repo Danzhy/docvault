@@ -9,6 +9,8 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2AuthorizationCodeBearer
 
+
+
 router = APIRouter()
 
 oauth2_scheme = OAuth2AuthorizationCodeBearer(tokenUrl="/auth/token")

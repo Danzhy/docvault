@@ -14,8 +14,12 @@ from http import HTTPStatus
 import json
 from fastapi import FastAPI, Query, HTTPException
 from fastapi.security import OAuth2PasswordBearer
-from docvault.api.bookings import create_booking_api, get_booklist_api
+from contextlib import asynccontextmanager
 from typing import Optional
+
+from docvault.db.connection import engine, Base
+from docvault.db.models import User
+from docvault.api.auth import auth
 
 
 load_dotenv()
@@ -28,6 +32,12 @@ print(type(PORT))
 # It reads DOCVAULT_PORT and DATABASE_URL, starts an http.server-based service,
 # and serves /ping, /book, and /booklist.
 
+
+@asynccontextmanager
+async def fastapi_startup(app: FastAPI):
+    Base.metadata.create_all(engine)
+    yield
+
 app = FastAPI()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
@@ -37,27 +47,27 @@ async def health_check():
     return {'status': 'ok'}
 
 
+app.include_router(auth)
 
+# @app.post('/book', status_code=200)
+# async def make_booking(place_id: int, user_id: int, from_date: str = Query(None, alias="from"), to_date: str = Query(None, alias="to")):
+#     #call db function to make a write
+#     create_booking_api(place_id, user_id, from_date, to_date)
 
-@app.post('/book', status_code=200)
-async def make_booking(place_id: int, user_id: int, from_date: str = Query(None, alias="from"), to_date: str = Query(None, alias="to")):
-    #call db function to make a write
-    create_booking_api(place_id, user_id, from_date, to_date)
+#     return 
 
-    return 
-
-@app.get('/booklist')
-async def get_booklist(user_id: Optional[int] = None, place_id: Optional[int] = None):
-    if not user_id and not place_id:
-        raise HTTPException(status_code=400, detail="Missing query paramter: either user id or place id")
+# @app.get('/booklist')
+# async def get_booklist(user_id: Optional[int] = None, place_id: Optional[int] = None):
+#     if not user_id and not place_id:
+#         raise HTTPException(status_code=400, detail="Missing query paramter: either user id or place id")
     
-    if user_id:
-        response_obj = get_booklist_api(user_id, None)
-    else: 
-        response_obj = get_booklist_api(None, place_id)
+#     if user_id:
+#         response_obj = get_booklist_api(user_id, None)
+#     else: 
+#         response_obj = get_booklist_api(None, place_id)
     
 
-    return response_obj
+#     return response_obj
 
 
 # TODO: in phase 2, define the FastAPI application and register API routers.

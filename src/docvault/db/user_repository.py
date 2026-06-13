@@ -5,7 +5,9 @@ module, but password hashing and token logic live in the auth package.
 """
 
 # TODO: import psycopg.
-from .connection import Session, User
+from .models import User
+from .connection import Session
+from docvault.auth.passwords import get_password_hash
 
 # TODO: define a UserRow dataclass or namedtuple that mirrors the users table.
 
@@ -14,8 +16,8 @@ from .connection import Session, User
 
 def create_user(user: User):
     with Session() as session:
-        with session.begin():
-            
+        with session.begin():            
+            user.password = get_password_hash(user.password)
             session.add(user)
 
 
